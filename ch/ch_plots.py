@@ -177,7 +177,6 @@ def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
 def plot_3d_hulls(ordination, metadata,  #necessary
                   groupc, subjc, timec,  #column names
                   axis=True,
-                  save=False,
                   rotation=60):
     
     hp = HullsPlot(
@@ -351,7 +350,7 @@ def plot_individuals(hp, df, y='convexhull_volume'):
 def plot_indiv_hulls_by_group(
     ordination, metadata,
     groupc, subjc, timec,
-    n_subsamples=None, n_iters=20):
+    n_subsamples=None):
     
     hp = HullsPlot(
         ordination=ordination,
