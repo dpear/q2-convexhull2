@@ -2,44 +2,44 @@
 
 {% block content %}
 
-<div class="row">
-  3d convex hull plot
-</div>
-      <div class="text-center">
-        <img src="3d_hulls.svg"/>
-        <div>
-          <a href="3d_hulls.svg" target="_blank" rel="noopener noreferrer" class="btn btn-default">
-            Download SVG
-          </a>
-        </div>
-      </div>
-  </div>
+<h2>3d plots</h2>
+<div>
 
-<div class="row">
-  Convex Hulls by group and time
-</div>
-      <div class="text-center">
-        <img src="group_hulls.svg"/>
-        <div>
-          <a href="group_hulls.svg" target="_blank" rel="noopener noreferrer" class="btn btn-default">
-            Download SVG
-          </a>
-        </div>
-      </div>
+  <div>
+    Axes can be removed by setting the axis parameter to False.
+    `(... axis=False)` or 
+    ` --p-axis False`
   </div>
+  <img src="3d_hulls.svg" alt="3d_hulls">
+  <a href="3d_hulls.svg" target="_blank" rel="noopener noreferrer" class="btn btn-default">
+    Download SVG
+  </a>
+</div>
+
+<h2>Convex Hulls by group and time</h2>
+<div>
+  <div>
+    <div>
+    <img src="group_hulls.svg" alt="group_hulls">
+    <a href="group_hulls.svg" target="_blank" rel="noopener noreferrer" class="btn btn-default">
+      Download SVG
+    </a>
+    </div>
+  </div>
+</div>
 
 
-<div class="row">
-  Convex Hulls by individual
-</div>
-      <div class="text-center">
-        <img src="indiv_hulls.svg"/>
-        <div>
-          <a href="indiv_hulls.svg" target="_blank" rel="noopener noreferrer" class="btn btn-default">
-            Download SVG
-          </a>
-        </div>
-      </div>
+<h2>Convex Hulls by individual</h2>
+<div>
+  <div>
+    <div>
+    <img src="indiv_hulls.svg" alt="group_hulls">
+    <a href="indiv_hulls.svg" target="_blank" rel="noopener noreferrer" class="btn btn-default">
+      Download SVG
+    </a>
+    </div>
   </div>
+</div>
+
 
 {% endblock %}

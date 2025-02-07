@@ -12,6 +12,11 @@ setup(
     #         'my-command = my_package.my_script:main',  # "my-command" is the command you'll use in the CLI
     #     ],
     # },
+
+    entry_points={
+        'qiime2.plugins': ['q2-convexhull2=ch.q2.plugin_setup:plugin'],
+        # 'console_scripts': ['q2-convexhull2=q2-convexhull2']
+    },
     author='Daniela Perry',
     author_email='dsperry@ucsd.edu',
     description='New plotting functionality with convex hull calculations',
@@ -24,4 +29,5 @@ setup(
         # List your project's dependencies here.
         # e.g., 'requests>=2.25.1'
     ],
+
 )

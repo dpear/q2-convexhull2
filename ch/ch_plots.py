@@ -22,7 +22,7 @@ class HullsPlot:
     def __init__(self, ordination, metadata, groupc, subjc=None, timec=None):
         
         self.o_ord = ordination
-        self.o_meta = metadata
+        self.o_meta = metadata.to_dataframe().reset_index()
         self.groupc = groupc
         self.subjc = subjc
         self.timec = timec
@@ -146,8 +146,9 @@ def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
     groups = hp.get_groups()
     
     # Configure plot
-    scale = 50
-    fig = plt.figure(figsize=(scale, scale))
+    scale = 10
+    fig = plt.figure(figsize=(scale*len(times), scale))
+    # fig = plt.figure()
     ncol = len(times)
     
     for i, what_time in enumerate(times):
@@ -363,4 +364,6 @@ def plot_indiv_hulls_by_group(
     df = ch_df_by_indiv(hp, n_subsamples=n_subsamples)
     ax = plot_individuals(hp, df)
     
-    return df, ax, hp
+    return df, ax
+
+

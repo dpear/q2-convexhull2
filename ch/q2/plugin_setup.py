@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Copyright (c) 2019--, gemelli development team.
+# Copyright (c) 2025--, Daniela Perry.
 #
 # Distributed under the terms of the Modified BSD License.
 #
@@ -14,7 +14,6 @@ from ch.q2._visualizer import hulls_plots
 
 from ch import __version__
 
-from gemelli.q2._visualizer import qc_rarefy
 
 from ._type import Hulls
 from ._format import HullsFormat, HullsDirectoryFormat
@@ -27,17 +26,6 @@ from qiime2.plugin import Metadata
 
 citations = qiime2.plugin.Citations.load(
     'citations.bib', package='gemelli')
-
-plugin = qiime2.plugin.Plugin(
-    name='gemelli',
-    version=__version__,
-    website="https://github.com/biocore/gemelli",
-    citations=[citations['Martino2019'],
-               citations['Martino2020']],
-    short_description=('Plugin for Compositional Tensor Factorization'),
-    description=('This is a QIIME 2 plugin supporting Robust Aitchison on '
-                 'feature tables'),
-    package='gemelli')
 
 plugin = qiime2.plugin.Plugin(
     name='convexhull2',
@@ -65,7 +53,6 @@ plugin.visualizers.register_function(
         'n_iters': 'Int = default 20',
         'n_subsamples': 'int = None',
     },
-
     input_descriptions={
         'ordination': 'PCoAResults',
     },
@@ -74,10 +61,10 @@ plugin.visualizers.register_function(
         'groupc': Str,
         'subjc': Str,
         'timec': Str,
-        'axis': Bool = True,
-        'rotation': Int = 60,
-        'n_iters': Int = 20,
-        'n_subsamples': int = None,
+        'axis': Bool,
+        'rotation': Int,
+        'n_iters': Int,
+        'n_subsamples': Int,
     },
     name='Calculate all 3 types of plots',
     description=('Generate a qiime2 visualization '
