@@ -8,9 +8,9 @@ convexhull2 is a tool for visualizing and calculating dispersion across a set of
 ### Necessary inputs:
 - **Ordination** (or biplot)
 - **Metadata**
-- **Column:** grouping column
-- **Column:** numeric time column
-- **Column:** subject id column
+    - **Column:** grouping column
+    - **Column:** numeric time column
+    - **Column:** subject id column
 
 If starting from a `biom.Table` see the tutorial `01-ch-visualizations-tutorial.ipynb` for how to generate an ordination using RPCA. A working QIIME2 environment is required for this step.
 ### Installation

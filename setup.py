@@ -29,5 +29,4 @@ setup(
         'seaborn',
         'biom-format',
     ],
-
 )
