@@ -24,10 +24,10 @@ setup(
         'pandas',
         'numpy',
         'scipy',
+        'skbio',
         'matplotlib',
-        'seaborn'
-        # List your project's dependencies here.
-        # e.g., 'requests>=2.25.1'
+        'seaborn',
+        'biom-format',
     ],
 
 )
