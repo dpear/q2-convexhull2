@@ -2,7 +2,10 @@
 
 convexhull2 is a tool for visualizing and calculating dispersion across a set of microbial samples over time through the calculation of a convex hull volume. It produces visualizations that track how group dispersion changes over time, and also how an individual's dispersion changes over time, which can be seen as a meaasure of individual volatility.
 
-Necessary inputs:
+![3d hulls](tutorials/data/out-3d_hulls.svg)
+
+
+### Necessary inputs:
 - **Ordination** (or biplot)
 - **Metadata**
 - **Column:** grouping column
