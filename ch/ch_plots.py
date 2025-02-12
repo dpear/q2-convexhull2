@@ -11,7 +11,6 @@ import seaborn as sns
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
 
 from matplotlib.colors import rgb2hex
-from gemelli.rpca import rpca
 
 import random
 import warnings
@@ -22,7 +21,7 @@ class HullsPlot:
     def __init__(self, ordination, metadata, groupc, subjc=None, timec=None):
         
         self.o_ord = ordination
-        self.o_meta = metadata.to_dataframe().reset_index()
+        self.o_meta = metadata
         self.groupc = groupc
         self.subjc = subjc
         self.timec = timec
@@ -306,12 +305,16 @@ def _plot_hulls_group(hp, df):
         ax=ax
     )
     
-    return ax
+    return fig
 
 def plot_group_hulls_over_time(
-    ordination, metadata,
-    groupc, subjc, timec,
-    n_subsamples=10, n_iters=20):
+    ordination: skbio.OrdinationResults, 
+    metadata: pd.DataFrame,
+    groupc: str, 
+    subjc : int,
+    timec : int,
+    n_subsamples: int = 10,
+    n_iters: int = 20):
     
     hp = HullsPlot(
         ordination=ordination,
@@ -322,9 +325,9 @@ def plot_group_hulls_over_time(
     )
     
     df = generate_hulls_df(hp, n_subsamples=n_subsamples, n_iters=n_iters)
-    ax = _plot_hulls_group(hp, df)
+    fig = _plot_hulls_group(hp, df)
     
-    return df, ax
+    return df, fig
 
 
 
@@ -346,7 +349,7 @@ def plot_individuals(hp, df, y='convexhull_volume'):
     fig, ax = plt.subplots(1,1)
     sns.boxplot(data=data, x=x, y=y, palette=hp.colors, ax=ax)
     sns.swarmplot(data=data, x=x, y=y, color='black', ax=ax)
-    return ax
+    return fig
     
 def plot_indiv_hulls_by_group(
     ordination, metadata,
@@ -362,8 +365,8 @@ def plot_indiv_hulls_by_group(
     )
     
     df = ch_df_by_indiv(hp, n_subsamples=n_subsamples)
-    ax = plot_individuals(hp, df)
+    fig = plot_individuals(hp, df)
     
-    return df, ax
+    return df, fig
 
 

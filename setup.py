@@ -24,7 +24,7 @@ setup(
         'pandas',
         'numpy',
         'scipy',
-        'skbio',
+        'scikit-bio',
         'matplotlib',
         'seaborn',
         'biom-format',
