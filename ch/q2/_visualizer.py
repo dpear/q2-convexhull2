@@ -15,12 +15,33 @@ import qiime2
 TEMPLATES = pkg_resources.resource_filename('ch', 'q2')
 
 def _validate(metadata):
-    
+    """ Ensure metadata is correct type. 
+        This essentially does the job of a transformer.
+        Transformer should be implemented but isn't. 
+        See this post: https://forum.qiime2.org/t/metadata-
+        type-handling-transforming-in-qiime2-plugins/32514
+    """
+
     if type(metadata) == pd.DataFrame:
         return metadata
     else:
         return metadata.to_dataframe().reset_index()
 
+
+def save_hulls_output(output_dir, name, df, fig):
+    """ Save hulls plots as svg and df's as tsvs.
+        Inputs: output_dir, name, df, fig.
+    """
+    
+    f_svg = os.path.join(output_dir, f'{name}.svg')
+    f_tsv = os.path.join(output_dir, f'{name}.tsv')
+    fig.savefig(f_svg, bbox_inches='tight')
+    
+    # Add option to not save df for 3d hulls plot
+    if not df == None:
+        df.to_csv(f_tsv, sep='\t', index=False)
+
+ 
 def hulls_plots(
     output_dir: str,
     ordination: skbio.OrdinationResults,
@@ -33,17 +54,24 @@ def hulls_plots(
     n_iters: int = 20,
     n_subsamples: int = None,
     ) -> None:
+    """ Creates the three hulls plots and saves in temp
+        qiime2 directory to be viewed in the visualization file. 
+    """
 
     metadata = _validate(metadata)
 
+    # MAKE 3d PLOT AND SAVE
     fig, hp = ch_plot_3d_hulls(
         ordination, metadata,  #necessary
         groupc, subjc, timec,  #column names
         axis=axis, rotation=rotation)
-    fpath = os.path.join(output_dir, '3d_hulls.svg')
-    fig.savefig(fpath, bbox_inches='tight')
-    plt.clf()
+    save_hulls_output(
+        output_dir,
+        '3d_hulls',
+        None,
+        fig)
 
+    # MAKE GROUP PLOT AND SAVE
     group_df, group_fig = ch_plot_group_hulls_over_time(
         ordination, metadata,
         groupc, subjc, timec,
@@ -53,20 +81,24 @@ def hulls_plots(
     group_fig.savefig(fpath, bbox_inches='tight')
     plt.clf()
 
+    # MAKE INDIVIDUAL PLOT AND SAVE
     indiv_df, indiv_fig = ch_plot_indiv_hulls_by_group(
         ordination, metadata,
         groupc, subjc, timec,
         n_subsamples=None)
-    fpath = os.path.join(output_dir, 'indiv_hulls.svg')
-    indiv_fig.savefig(fpath, bbox_inches='tight')
+    save_hulls_output(
+        output_dir,
+        'indiv_hulls',
+        indiv_df,
+        indiv_fig)
+    
     plt.clf()
 
-    # VISUALIZER
+    # CREATE VISUALIZER
     context = {}
     TEMPLATES = pkg_resources.resource_filename('ch', 'q2')
     index = os.path.join(TEMPLATES, 'plot_assets', 'index.html')
     q2templates.render(index, output_dir, context=context)
-    
     
 
 def hulls_plots_cross_sectional(
@@ -80,6 +112,10 @@ def hulls_plots_cross_sectional(
     n_iters: int = 20,
     n_subsamples: int = None,
     ) -> None:
+    """ Creates the 3d plot and group plot in the case that
+        there are no timepoints and only group characteristics are
+        of interest.
+    """
 
     metadata = _validate(metadata)
     metadata['o'] = [0 for i in range(len(metadata))]
@@ -97,12 +133,16 @@ def hulls_plots_cross_sectional(
         groupc, subjc,
         n_subsamples=None
     )
-    fpath = os.path.join(output_dir, 'group_hulls.svg')
-    group_fig.savefig(fpath, bbox_inches='tight')
+    save_hulls_output(
+        output_dir,
+        'group_hulls',
+        group_df,
+        group_fig)
     plt.clf()
 
     # VISUALIZER
     context = {}
     TEMPLATES = pkg_resources.resource_filename('ch', 'q2')
-    index = os.path.join(TEMPLATES, 'plot_assets', 'index_cross.html')
-    q2templates.render(index, output_dir, context=context)
+    index_c = os.path.join(TEMPLATES, 'plot_assets_cross', 'index.html')
+    q2templates.render(index_c, output_dir, context=context)
+    
