@@ -14,6 +14,13 @@ import qiime2
 
 TEMPLATES = pkg_resources.resource_filename('ch', 'q2')
 
+INDEX_CROSS_DIR = 'plot_assets_cross'
+INDEX_DIR = 'plot_assets'
+
+NAME_GROUP_HULLS = 'group_hulls'
+NAME_3D_HULLS = '3d_hulls'
+NAME_INDIV_HULLS = 'indiv_hulls'
+
 def _validate(metadata):
     """ Ensure metadata is correct type. 
         This essentially does the job of a transformer.
@@ -28,7 +35,7 @@ def _validate(metadata):
         return metadata.to_dataframe().reset_index()
 
 
-def save_hulls_output(output_dir, name, df, fig):
+def save_hulls_output(output_dir, name, fig, df, has_df=True):
     """ Save hulls plots as svg and df's as tsvs.
         Inputs: output_dir, name, df, fig.
     """
@@ -38,7 +45,7 @@ def save_hulls_output(output_dir, name, df, fig):
     fig.savefig(f_svg, bbox_inches='tight')
     
     # Add option to not save df for 3d hulls plot
-    if not df == None:
+    if has_df:
         df.to_csv(f_tsv, sep='\t', index=False)
 
  
@@ -62,42 +69,59 @@ def hulls_plots(
 
     # MAKE 3d PLOT AND SAVE
     fig, hp = ch_plot_3d_hulls(
-        ordination, metadata,  #necessary
-        groupc, subjc, timec,  #column names
-        axis=axis, rotation=rotation)
+        ordination=ordination,
+        metadata=metadata,
+        groupc=groupc,
+        subjc=subjc,
+        timec=timec,
+        axis=axis,
+        rotation=rotation)
+    
     save_hulls_output(
-        output_dir,
-        '3d_hulls',
-        None,
-        fig)
-
+        output_dir=output_dir,
+        name=NAME_3D_HULLS,
+        df=None,
+        fig=fig,
+        has_df=False)
+    plt.clf()
+    
     # MAKE GROUP PLOT AND SAVE
     group_df, group_fig = ch_plot_group_hulls_over_time(
-        ordination, metadata,
-        groupc, subjc, timec,
-        n_subsamples=None, n_iters=n_iters)
+        ordination=ordination,
+        metadata=metadata,
+        groupc=groupc,
+        subjc=subjc,
+        timec=timec,
+        n_subsamples=n_subsamples,
+        n_iters=n_iters)
     
-    fpath = os.path.join(output_dir, 'group_hulls.svg')
-    group_fig.savefig(fpath, bbox_inches='tight')
+    save_hulls_output(
+        output_dir=output_dir,
+        name=NAME_GROUP_HULLS,
+        df=group_df,
+        fig=group_fig,
+        has_df=True)
     plt.clf()
 
     # MAKE INDIVIDUAL PLOT AND SAVE
     indiv_df, indiv_fig = ch_plot_indiv_hulls_by_group(
-        ordination, metadata,
-        groupc, subjc, timec,
+        ordination=ordination, 
+        metadata=metadata,
+        groupc=groupc,
+        subjc=subjc,
+        timec=timec,
         n_subsamples=None)
     save_hulls_output(
-        output_dir,
-        'indiv_hulls',
-        indiv_df,
-        indiv_fig)
-    
+        output_dir=output_dir,
+        name=NAME_INDIV_HULLS,
+        df=indiv_df,
+        fig=indiv_fig,
+        has_df=True)
     plt.clf()
 
     # CREATE VISUALIZER
     context = {}
-    TEMPLATES = pkg_resources.resource_filename('ch', 'q2')
-    index = os.path.join(TEMPLATES, 'plot_assets', 'index.html')
+    index = os.path.join(TEMPLATES, INDEX_DIR, 'index.html')
     q2templates.render(index, output_dir, context=context)
     
 
@@ -118,6 +142,8 @@ def hulls_plots_cross_sectional(
     """
 
     metadata = _validate(metadata)
+    
+    # Create metadata column with only one value
     metadata['o'] = [0 for i in range(len(metadata))]
 
     fig, hp = ch_plot_3d_hulls(
@@ -129,20 +155,23 @@ def hulls_plots_cross_sectional(
     plt.clf()
 
     group_df, group_fig = ch_plot_group_cross_sectional(
-        ordination, metadata,
-        groupc, subjc,
+        ordination=ordination, 
+        metadata=metadata,
+        groupc=groupc, 
+        subjc=subjc,
         n_subsamples=None
     )
     save_hulls_output(
-        output_dir,
-        'group_hulls',
-        group_df,
-        group_fig)
+        output_dir=output_dir,
+        name=NAME_GROUP_HULLS,
+        df=group_df,
+        fig=group_fig,
+        has_df=True)
+    
     plt.clf()
 
     # VISUALIZER
     context = {}
-    TEMPLATES = pkg_resources.resource_filename('ch', 'q2')
-    index_c = os.path.join(TEMPLATES, 'plot_assets_cross', 'index.html')
-    q2templates.render(index_c, output_dir, context=context)
+    index = os.path.join(TEMPLATES, INDEX_CROSS_DIR, 'index.html')
+    q2templates.render(index, output_dir, context=context)
     
