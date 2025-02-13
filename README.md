@@ -41,3 +41,9 @@ qiime convexhull2 hulls-plots-cross-sectional \
     --p-subjc 'host_subject_id' \
     --o-visualization data/hulls_out_cross_sectional
 ```
+
+### About
+
+convexhull2 produces three visualizations that capture information on dispersion over time within a group and within an individual. It has been adapted from [q2-convexhull](https://github.com/dpear/q2-convexhull) which originally supported only the easy calculation of convexhulls within a QIIME environment.
+
+The first plots are 3D hulls drawn over each group at different timepoints. The second takes each group, subsamples its constituent members, and iteratively computes the convex hull volume. This is done to account for outliers that may be inflating the convex hull volume.
