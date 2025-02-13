@@ -10,7 +10,8 @@ import qiime2.plugin
 import qiime2.sdk
 import importlib
 
-from ch.q2._visualizer import hulls_plots
+from ch.q2._visualizer import (hulls_plots,
+                               hulls_plots_cross_sectional)
 
 from ch import __version__
 
@@ -21,7 +22,6 @@ from ._format import HullsFormat, HullsDirectoryFormat
 from qiime2.plugin import (Int, Str, Bool,
                            Metadata, Visualization)
 from q2_types.ordination import PCoAResults
-from qiime2.plugin import Metadata
 
 
 citations = qiime2.plugin.Citations.load(
@@ -38,10 +38,21 @@ plugin = qiime2.plugin.Plugin(
         'calculating and visualizing Convex Hull Volume'),
     package='convexhull2')
 
+# LONGITUDINAL VISUALIZATION
 plugin.visualizers.register_function(
     function=hulls_plots,
     inputs={
         'ordination': PCoAResults,
+    },
+    parameters={
+        'metadata': Metadata,
+        'groupc': Str,
+        'subjc': Str,
+        'timec': Str,
+        'axis': Bool,
+        'rotation': Int,
+        'n_iters': Int,
+        'n_subsamples': Int,
     },
     parameter_descriptions={
         'metadata': 'Metadata',
@@ -56,15 +67,40 @@ plugin.visualizers.register_function(
     input_descriptions={
         'ordination': 'PCoAResults',
     },
+    name='Calculate all 3 types of plots',
+    description=('Generate a qiime2 visualization '
+                 'that allows for generating and easy download '
+                 'of 3d hulls plot, line plot of group dispersion '
+                 'and boxplot of individual dispersion by group'),
+    citations=[],
+)
+
+# CROSS SECTIONAL VISUALIZATION
+plugin.visualizers.register_function(
+    function=hulls_plots_cross_sectional,
+    inputs={
+        'ordination': PCoAResults,
+    },
     parameters={
         'metadata': Metadata,
         'groupc': Str,
         'subjc': Str,
-        'timec': Str,
         'axis': Bool,
         'rotation': Int,
         'n_iters': Int,
         'n_subsamples': Int,
+    },
+    parameter_descriptions={
+        'metadata': 'Metadata',
+        'groupc': 'Str',
+        'subjc': 'Str',
+        'axis': 'Bool default True',
+        'rotation': 'Int = default 60',
+        'n_iters': 'Int = default 20',
+        'n_subsamples': 'int = None',
+    },
+    input_descriptions={
+        'ordination': 'PCoAResults',
     },
     name='Calculate all 3 types of plots',
     description=('Generate a qiime2 visualization '
@@ -73,5 +109,6 @@ plugin.visualizers.register_function(
                  'and boxplot of individual dispersion by group'),
     citations=[],
 )
+
 
 importlib.import_module('ch.q2._transformer')

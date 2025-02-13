@@ -177,7 +177,7 @@ def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
 def plot_3d_hulls(ordination, metadata,  #necessary
                   groupc, subjc, timec,  #column names
                   axis=True,
-                  rotation=60):
+                  rotation=45):
     
     hp = HullsPlot(
         ordination=ordination,
@@ -186,13 +186,10 @@ def plot_3d_hulls(ordination, metadata,  #necessary
         subjc=subjc,
         timec=timec,
     )
-    
-    fig = _plot_3d_hulls(hp, axis=True, rotation=45, elev=30)
+
+    fig = _plot_3d_hulls(hp, axis=axis, rotation=rotation, elev=30)
     
     return fig, hp
-
-
-
 
 
 class SubsampledCH:
@@ -216,8 +213,16 @@ def subsample_ids(group, n):
     return random.sample(ids, n)
 
 
-def find_n_subsamples(groups):
+def find_n_subsamples(groups, n_subsamples):
+
     smallest_n = min([len(group) for g, group in groups])
+    
+    if n_subsamples is not None:
+        return n_subsamples
+    
+    if smallest_n - 1 < 3:
+        raise ValueError('Some groups have less than 3 members.')
+    
     return smallest_n - 1 
 
 
@@ -270,9 +275,7 @@ def ch_by_groups(hp, ch, groups, n_subsamples, i, ndim=3, time=True):
 def generate_hulls_df(hp, n_subsamples=None, n_iters=10, ndim=3):
     
     groups = hp.meta.groupby([hp.groupc, hp.timec])
-   
-    if n_subsamples == None:
-        n_subsamples = find_n_subsamples(groups)
+    n_subsamples = find_n_subsamples(groups, n_subsamples)
     
     ch = SubsampledCH()
     
@@ -363,10 +366,26 @@ def plot_indiv_hulls_by_group(
         subjc=subjc,
         timec=timec,
     )
-    
     df = ch_df_by_indiv(hp, n_subsamples=n_subsamples)
     fig = plot_individuals(hp, df)
     
     return df, fig
 
 
+def plot_group_cross_sectional(
+    ordination, metadata,
+    groupc, subjc,
+    n_subsamples=None):
+    
+    hp = HullsPlot(
+        ordination=ordination,
+        metadata=metadata,
+        groupc=groupc,
+        subjc=subjc,
+        timec='o',
+    )
+    
+    df = generate_hulls_df(hp, n_subsamples=n_subsamples)
+    fig = plot_individuals(hp, df)
+    
+    return df, fig
