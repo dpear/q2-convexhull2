@@ -12,6 +12,12 @@ convexhull2 is a tool for visualizing and calculating dispersion across a set of
     - **Column:** numeric time column
     - **Column:** subject id column
 
+### Tutorials:
+
+convexhull2 is available within a QIIME2 environment or as a standalone tool. If you are working within a QIIME2 environment, navigate to the QIIME2 tutorial, which uses command line (CLI) commands to generate plots.
+- [Standalone tutorial](https://github.com/dpear/q2-convexhull2/blob/main/tutorials/01-ch-visualizations-tutorial.ipynb) 
+- [QIIME2 tutorial](https://github.com/dpear/q2-convexhull2/blob/main/tutorials/01-ch-visualizations-tutorial.ipynb)
+
 If starting from a `biom.Table` see the tutorial `01-ch-visualizations-tutorial.ipynb` for how to generate an ordination using RPCA. A working QIIME2 environment is required for this step.
 ### Installation
 
