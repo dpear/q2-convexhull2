@@ -1,6 +1,4 @@
 import pandas as pd
-import biom
-import numpy as np
 import os
 import skbio
 
@@ -166,26 +164,24 @@ def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
             ax.axis('off')
 
         ax.view_init(elev=elev, azim=rotation)  # Adjust these angles as desired
-
-        # Show the plot
         plt.title(f"Convex Hulls at {what_time}")
 
     return fig
    
-
-
+   
 def plot_3d_hulls(ordination, metadata,  #necessary
                   groupc, subjc, timec,  #column names
                   axis=True,
-                  rotation=45):
+                  rotation=45, hp=None):
     
-    hp = HullsPlot(
-        ordination=ordination,
-        metadata=metadata,
-        groupc=groupc,
-        subjc=subjc,
-        timec=timec,
-    )
+    if hp == None:
+        hp = HullsPlot(
+            ordination=ordination,
+            metadata=metadata,
+            groupc=groupc,
+            subjc=subjc,
+            timec=timec,
+        )
 
     fig = _plot_3d_hulls(hp, axis=axis, rotation=rotation, elev=30)
     
@@ -317,21 +313,22 @@ def plot_group_hulls_over_time(
     subjc : int,
     timec : int,
     n_subsamples: int = 10,
-    n_iters: int = 20):
+    n_iters: int = 20,
+    hp = None):
     
-    hp = HullsPlot(
-        ordination=ordination,
-        metadata=metadata,
-        groupc=groupc,
-        subjc=subjc,
-        timec=timec,
-    )
+    if hp == None:
+        hp = HullsPlot(
+            ordination=ordination,
+            metadata=metadata,
+            groupc=groupc,
+            subjc=subjc,
+            timec=timec,
+        )
     
     df = generate_hulls_df(hp, n_subsamples=n_subsamples, n_iters=n_iters)
     fig = _plot_hulls_group(hp, df)
     
     return df, fig
-
 
 
 ### INDIVIDUAL PLOTS
@@ -357,15 +354,16 @@ def plot_individuals(hp, df, y='convexhull_volume'):
 def plot_indiv_hulls_by_group(
     ordination, metadata,
     groupc, subjc, timec,
-    n_subsamples=None):
+    n_subsamples=None, hp=None):
     
-    hp = HullsPlot(
-        ordination=ordination,
-        metadata=metadata,
-        groupc=groupc,
-        subjc=subjc,
-        timec=timec,
-    )
+    if hp == None:
+        hp = HullsPlot(
+            ordination=ordination,
+            metadata=metadata,
+            groupc=groupc,
+            subjc=subjc,
+            timec=timec,
+        )
     df = ch_df_by_indiv(hp, n_subsamples=n_subsamples)
     fig = plot_individuals(hp, df)
     
@@ -375,15 +373,17 @@ def plot_indiv_hulls_by_group(
 def plot_group_cross_sectional(
     ordination, metadata,
     groupc, subjc,
-    n_subsamples=None):
+    n_subsamples=None,
+    hp=None):
     
-    hp = HullsPlot(
-        ordination=ordination,
-        metadata=metadata,
-        groupc=groupc,
-        subjc=subjc,
-        timec='o',
-    )
+    if hp == None:
+        hp = HullsPlot(
+            ordination=ordination,
+            metadata=metadata,
+            groupc=groupc,
+            subjc=subjc,
+            timec='o',
+        )
     
     df = generate_hulls_df(hp, n_subsamples=n_subsamples)
     fig = plot_individuals(hp, df)

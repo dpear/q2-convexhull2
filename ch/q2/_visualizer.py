@@ -93,7 +93,8 @@ def hulls_plots(
         subjc=subjc,
         timec=timec,
         n_subsamples=n_subsamples,
-        n_iters=n_iters)
+        n_iters=n_iters,
+        hp=hp)
     
     save_hulls_output(
         output_dir=output_dir,
@@ -110,7 +111,8 @@ def hulls_plots(
         groupc=groupc,
         subjc=subjc,
         timec=timec,
-        n_subsamples=None)
+        n_subsamples=None,
+        hp=hp)
     save_hulls_output(
         output_dir=output_dir,
         name=NAME_INDIV_HULLS,
@@ -150,16 +152,21 @@ def hulls_plots_cross_sectional(
         ordination, metadata,  #necessary
         groupc, subjc, 'o',    #column names
         axis=axis, rotation=rotation)
-    fpath = os.path.join(output_dir, '3d_hulls.svg')
-    fig.savefig(fpath, bbox_inches='tight')
+    save_hulls_output(
+        output_dir=output_dir,
+        name=NAME_3D_HULLS,
+        df=None,
+        fig=group_fig,
+        has_df=False)
     plt.clf()
-
+    
     group_df, group_fig = ch_plot_group_cross_sectional(
         ordination=ordination, 
         metadata=metadata,
         groupc=groupc, 
         subjc=subjc,
-        n_subsamples=None
+        n_subsamples=None,
+        hp=hp,
     )
     save_hulls_output(
         output_dir=output_dir,
@@ -167,7 +174,6 @@ def hulls_plots_cross_sectional(
         df=group_df,
         fig=group_fig,
         has_df=True)
-    
     plt.clf()
 
     # VISUALIZER
