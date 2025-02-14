@@ -60,7 +60,7 @@ Scipy.spatial uses the Qhull library, which implements the Quickhull algorithm (
 
 We utilize ConvexHull from scipy.spatial that wraps the Qhull library, which implements the Quickhull algorithm (Barber et al. 1996) in 3D, a divide and conquer algorithm that works similarly to QuickSort in O(n log n) time. pandas [ref] is used for data manipulation and seaborn [ref] and matplotlib [ref] are used to produce plots.
 
-FIGURE + LEGEND 
+![figure1](figure1.png)
 
 # Acknowledgments
 TODO
