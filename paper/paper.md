@@ -53,12 +53,17 @@ Similarly, if we have groups (i.e. treatment vs. control) that stratify our data
 
 ### Summary
 
-q2-convexhull is a package that is both integrated with the popular QIIME2 microbial data analysis suite, and provides standalone functionality, for calculating convex hull volumes over time and visualizing them in 3D, tracking changes in group dispersion over time, and quantifying dispersion of individuals over time. 3D hulls are displayed over each group of interest at each timepoint. A group analysis employed the above mentioned bootstrapping technique to plot the distribution of dispersion of all groups over time. An individual analysis calculates the convex hull volume over a single individual’s multiple time points, and compares these volumes of individuals with different group membership.
+q2-convexhull is a package that is both integrated with the popular QIIME2 microbial data analysis suite, and provides standalone functionality, for calculating convex hull volumes over time and visualizing them in 3D, tracking changes in group dispersion over time, and quantifying dispersion of individuals over time. 3D hulls are displayed over each group of interest at each timepoint **(Figure 1a)**. A group analysis employed the above mentioned bootstrapping technique to plot the distribution of dispersion of all groups over time **(Figure 1b)**. An individual analysis calculates the convex hull volume over a single individual’s multiple time points, and compares these volumes of individuals with different group membership **(Figure 1c)**.
 
 A sample metadata (.csv file) and column names defining group, individual, and time (optional) are given as input. Optional parameters include rotation display for 3D plots and 3D axis visibility, along with the ability for a user to define subsampling depth and number of iterations for the bootstrapping step. 
 Scipy.spatial uses the Qhull library, which implements the Quickhull algorithm (Barber et al. 1996) in 3D, a divide and conquer algorithm that works similarly to QuickSort in O(n log n) time.
+
+We utilize ConvexHull from scipy.spatial that wraps the Qhull library, which implements the Quickhull algorithm (Barber et al. 1996) in 3D, a divide and conquer algorithm that works similarly to QuickSort in O(n log n) time. pandas [ref] is used for data manipulation and seaborn [ref] and matplotlib [ref] are used to produce plots.
+
+FIGURE + LEGEND 
 
 # Acknowledgments
 TODO
 
 # References
+TODO
