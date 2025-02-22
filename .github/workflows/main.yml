@@ -25,6 +25,8 @@ jobs:
         with:
           activate-environment: q2
           environment-file: qiime2-latest-py38-linux-conda.yml
+          auto-activate-base: false
+
 
       - name: Install conda reqs
         shell: bash -l {0}
