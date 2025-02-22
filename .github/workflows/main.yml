@@ -4,12 +4,10 @@ name: Main CI
 on:
   pull_request:
     branches:
-      - master
-      - phylo-rclr
+      - main
   push:
     branches:
-      - master
-      - phylo-rclr
+      - main
 
 jobs:
   build:
