@@ -76,7 +76,6 @@ def hulls_plots(
         timec=timec,
         axis=axis,
         rotation=rotation)
-    
     save_hulls_output(
         output_dir=output_dir,
         name=NAME_3D_HULLS,

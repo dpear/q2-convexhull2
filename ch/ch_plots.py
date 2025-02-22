@@ -9,6 +9,8 @@ import seaborn as sns
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
 
 from matplotlib.colors import rgb2hex
+import matplotlib.colors as mcolors
+
 
 import random
 import warnings
@@ -47,7 +49,8 @@ class HullsPlot:
         if palette == 'tab10':
             cmap = plt.cm.tab10
 
-        colors = {groups[i]:cmap.colors[i] for i in range(len(groups))}
+
+        colors = {groups[i]:mcolors.to_hex(cmap.colors[i]) for i in range(len(groups))}
         return colors
     
     def get_color_from_group(self, group):
@@ -70,8 +73,6 @@ class HullsPlot:
     
 
 #### PLOT 3D HULLS FUNCTIONS ####
-
-
 def match_ids(hp, ids):
     """ Input HullsPlot, ids. Output overlaps as list"""
     
@@ -294,13 +295,13 @@ def _plot_hulls_group(hp, df):
         data=data, x=x, y=y,
         hue=hue,
         legend=False,
-        color=hp.colors,
+        palette=hp.colors,
         ax=ax
     )
     sns.scatterplot(
         data=data, x=x, y=y,
         hue=hue,
-        color=hp.colors,
+        palette=hp.colors,
         ax=ax
     )
     
