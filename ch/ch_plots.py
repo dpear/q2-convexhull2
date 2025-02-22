@@ -398,7 +398,9 @@ def ch_df_by_indiv(
         hp, 
         n_subsamples=None,
     ):
-    
+    """ Operates the same as for groups but passes 0 as a 
+        parameter for the iteration number.
+    """
     groups = hp.meta.groupby(hp.subjc)
     ch = SubsampledCH()
     ch = ch_by_groups(hp, ch, groups, n_subsamples, 0, ndim=3, time=False)
@@ -406,6 +408,8 @@ def ch_df_by_indiv(
     return df
 
 def plot_individuals(hp, df, y='convexhull_volume'):
+    """ Plots df of individual hull volumes """
+    
     data = df
     x = hp.groupc
     fig, ax = plt.subplots(1,1)
@@ -417,7 +421,10 @@ def plot_indiv_hulls_by_group(
     ordination, metadata,
     groupc, subjc, timec,
     n_subsamples=None, hp=None):
-    
+    """ Main individual plotting function that is called from
+        the visualizer
+    """
+
     if hp == None:
         hp = HullsPlot(
             ordination=ordination,
@@ -437,7 +444,10 @@ def plot_group_cross_sectional(
     groupc, subjc,
     n_subsamples=None,
     hp=None):
-    
+    """ Main function called from cross-sectional
+        group plotting action.
+    """
+
     if hp == None:
         hp = HullsPlot(
             ordination=ordination,
