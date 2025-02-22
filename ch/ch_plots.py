@@ -17,6 +17,8 @@ import warnings
 
 
 class HullsPlot:
+    """ Store attributes about our plots that are
+        shared based on a metadata and ordination """
     
     def __init__(self, ordination, metadata, groupc, subjc=None, timec=None):
         
