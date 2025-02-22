@@ -20,7 +20,7 @@ class HullsPlot:
     
     def __init__(self, ordination, metadata, groupc, subjc=None, timec=None):
         
-        self.o_ord = ordination
+        self.o_ord = ordination # o = original
         self.o_meta = metadata
         self.groupc = groupc
         self.subjc = subjc
