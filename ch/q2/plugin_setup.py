@@ -23,10 +23,7 @@ from qiime2.plugin import (Int, Str, Bool,
                            Metadata, Visualization)
 from q2_types.ordination import PCoAResults
 
-
-citations = qiime2.plugin.Citations.load(
-    'citations.bib', package='gemelli')
-
+# Define plugin
 plugin = qiime2.plugin.Plugin(
     name='convexhull2',
     version=__version__,
