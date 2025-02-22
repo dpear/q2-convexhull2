@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download Q2 file
-        run: wget -q wget -q https://github.com/qiime2/environment-files/blob/master/latest/staging/qiime2-latest-py38-linux-conda.yml
+        run: wget -q https://github.com/qiime2/environment-files/blob/master/latest/staging/qiime2-latest-py38-linux-conda.yml
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
