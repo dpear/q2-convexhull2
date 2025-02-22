@@ -1,0 +1,43 @@
+# much of this is taken from the Empress main.yml file
+name: Main CI
+
+on:
+  pull_request:
+    branches:
+      - master
+      - phylo-rclr
+  push:
+    branches:
+      - master
+      - phylo-rclr
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Download Q2 file
+        run: wget -q https://github.com/qiime2/environment-files/blob/master/latest/staging/qiime2-latest-py38-linux-conda.yml
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: q2
+          environment-file: qiime2-latest-py38-linux-conda.yml
+
+      - name: Install conda reqs
+        run: conda install --file ci/conda_requirements.txt -c biocore
+
+      - name: Install auxillary conda CI packages
+        run: conda install -c conda-forge coveralls flake8 nose
+
+      - name: Install ch
+        run: pip install -e .
+
+      - name: Run tests & coverage
+        shell: bash -l {0}
+        run: nosetests -v ch --with-coverage --cover-package=ch
