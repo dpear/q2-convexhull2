@@ -41,11 +41,11 @@ def save_hulls_output(output_dir, name, fig, df, has_df=True):
     """
     
     f_svg = os.path.join(output_dir, f'{name}.svg')
-    f_tsv = os.path.join(output_dir, f'{name}.tsv')
     fig.savefig(f_svg, bbox_inches='tight')
     
     # Add option to not save df for 3d hulls plot
     if has_df:
+        f_tsv = os.path.join(output_dir, f'{name}.tsv')
         df.to_csv(f_tsv, sep='\t', index=False)
 
  
@@ -67,7 +67,7 @@ def hulls_plots(
 
     metadata = _validate(metadata)
 
-    # MAKE 3d PLOT AND SAVE
+    # 1) MAKE 3d PLOT AND SAVE
     fig, hp = ch_plot_3d_hulls(
         ordination=ordination,
         metadata=metadata,
@@ -84,7 +84,7 @@ def hulls_plots(
         has_df=False)
     plt.clf()
     
-    # MAKE GROUP PLOT AND SAVE
+    # 2) MAKE GROUP PLOT AND SAVE
     group_df, group_fig = ch_plot_group_hulls_over_time(
         ordination=ordination,
         metadata=metadata,
@@ -103,7 +103,7 @@ def hulls_plots(
         has_df=True)
     plt.clf()
 
-    # MAKE INDIVIDUAL PLOT AND SAVE
+    # 3) MAKE INDIVIDUAL PLOT AND SAVE
     indiv_df, indiv_fig = ch_plot_indiv_hulls_by_group(
         ordination=ordination, 
         metadata=metadata,
@@ -145,8 +145,10 @@ def hulls_plots_cross_sectional(
     metadata = _validate(metadata)
     
     # Create metadata column with only one value
+    # so that we can use same functions.
     metadata['o'] = [0 for i in range(len(metadata))]
 
+    # 1) 3d hulls plots
     fig, hp = ch_plot_3d_hulls(
         ordination, metadata,  #necessary
         groupc, subjc, 'o',    #column names
@@ -158,7 +160,8 @@ def hulls_plots_cross_sectional(
         fig=group_fig,
         has_df=False)
     plt.clf()
-    
+
+    # 2) Group plots
     group_df, group_fig = ch_plot_group_cross_sectional(
         ordination=ordination, 
         metadata=metadata,
