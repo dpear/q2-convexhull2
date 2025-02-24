@@ -1,24 +1,20 @@
 import pandas as pd
 import os
-import skbio
-
+import skbioimport random
+import warnings
 
 from scipy.spatial import ConvexHull
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
-
 from matplotlib.colors import rgb2hex
 import matplotlib.colors as mcolors
 
 
-import random
-import warnings
-
-
 class HullsPlot:
-    """ Store attributes about our plots that are
-        shared based on a metadata and ordination """
+    """ Store attributes about our plots that are common to all 3 plots
+        based on a metadata and ordination. """
     
     def __init__(self, ordination, metadata, groupc, subjc=None, timec=None):
         
@@ -28,7 +24,7 @@ class HullsPlot:
         self.subjc = subjc
         self.timec = timec
         
-        self.id = self.get_id()
+        self.id = self.get_id()  # name of id column in metadata
         self.ord, self.meta = self.filter_ids()
         self.colors = self.get_colors()
         
@@ -86,7 +82,14 @@ class HullsPlot:
 
 #### PLOT 3D HULLS FUNCTIONS ####
 def match_ids(hp, ids):
-    """ Input HullsPlot, ids. Output overlapping ids as list."""
+    """ Extracts ids overlapping between hp and ids.
+    
+        Parameters:
+        hp (HullsPlot): hp object for plot info
+        ids (list): list of ids
+
+        Returns: matched_ids (list)
+    """
     
     matched_ids = list(set(hp.ord.index) & set(ids))
     
@@ -103,7 +106,7 @@ def add_hull(points, simplex, color, ax):
         points (np.array): 2d array of points
         simplex (np.array): list of points that define a hull
         color: any valid matplotlib color,
-        ax: working axis
+        ax (matplotlib.axes.Axes)
     """
     
     simplex_points = points[simplex]
@@ -117,9 +120,10 @@ def add_hull(points, simplex, color, ax):
 def get_site_ids(hp, group, time):
     """ Return metadata ids of a group at a time as list.
     
-    Parameters:
-    group
-    time
+        Parameters:
+        hp (HullsPlot)
+        group: name of single group
+        time: name of timepoint
     """
     
     s = hp.meta[hp.groupc] == group
@@ -139,6 +143,11 @@ def get_points(hp, matched_ids):
 def get_hull(group_points, group, time):
     """ Find convex hull around a group of points.
         If not possible, return None but don't error
+
+        Parameters:
+        group_points (pd.DataFrame): list of 3d points
+        group: name of single group that is being analyzed, for errors
+        time: name of single timepoint being analyzed, for errors
     """
 
     try:
@@ -149,7 +158,7 @@ def get_hull(group_points, group, time):
 
 
 def draw_points_hull(hp, group, group_points, group_hull, ax):
-    """ Draws points from a group at a time 
+    """ Draws points from a group at a time. 
 
         Parameters:
         hp (HullsPlot)
@@ -172,7 +181,15 @@ def draw_points_hull(hp, group, group_points, group_hull, ax):
 
 
 def make_points_hull(hp, group, time, ax):
+    """
+    Plot points and draw hull around one group of points.
 
+    Parameters:
+    hp (HullsPlot)
+    group: name of group
+    time: name of timepoint
+    ax (matplotlib.axes.Axes)
+    """
     ids = get_site_ids(hp, group, time)
     matched_ids = match_ids(hp, ids)
     group_points = get_points(hp, matched_ids)
@@ -182,7 +199,15 @@ def make_points_hull(hp, group, time, ax):
         draw_points_hull(hp, group, group_points, group_hull, ax)
 
 def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
-    """ Draw all hulls with each axis being a different timepoint """
+    """ Draw all hulls with each axis being a different timepoint.
+
+        Parameters:
+        hp (HullsPlot)
+        axis (bool): draw axes behind 3d plots? default true
+        rotation (int 0-360): how much to rotate plot around y axis
+        elev (int 0-90): how much to rotate the plot around x axis
+
+    """
     
     times = hp.get_times()
     groups = hp.get_groups()
@@ -193,8 +218,10 @@ def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
     ncol = len(times)
     
     for i, what_time in enumerate(times):
-
+        # Create new axis per timepoint
         ax = fig.add_subplot(1, ncol, i+1, projection='3d')
+
+        # Draw points for each group
         for group in groups:
             make_points_hull(hp, group, what_time, ax)
 
@@ -204,6 +231,7 @@ def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
         ax.set_zlabel("Z")
         ax.legend()
 
+        # Draw grey checkered axes behind plots? 
         if not axis:
             ax.axis('off')
 
@@ -213,13 +241,30 @@ def _plot_3d_hulls(hp, axis=True, rotation=45, elev=30):
     return fig
    
    
-def plot_3d_hulls(ordination, metadata,  #necessary
-                  groupc, subjc, timec,  #column names
+def plot_3d_hulls(ordination, 
+                  metadata,
+                  groupc,
+                  subjc,
+                  timec,
                   axis=True,
-                  rotation=45, hp=None):
+                  rotation=45,
+                  hp=None):
     """ Wraps 3d hulls plot and creates hp object if not passed. 
         This functionality is to allow users to generate a different plot
         first and use the same metadata and ordination to draw any other plot. 
+
+        Parameters:
+        ordination (skbio.OrdinationResults)
+        metadata (pd.DataFrame)
+        groupc (str): name of grouping column in metadata
+        subjc (str): name of subject column in metadata (for longitudinal)
+        timec (str): name of time column in metadata
+        axis (default True): draw grey checkered axes?
+        rotation (default 45): rotate plot in different way?
+        hp (default None): existing HullsPlot object?
+
+        Returns:fig, hp
+        plt.subplot object, HullsPlot object
     """           
     if hp == None:
         hp = HullsPlot(
@@ -250,11 +295,26 @@ class SubsampledCH:
         self.indiv = []
         
 def calculate_hull(ord, ids, ndim):
+    """ Generate convex hull
+        Parameters:
+        ord (pd.Dataframe): ordination df
+        ids (list): list of ids in ord to calculate hull
+        ndim (default 3): number of dimensions over which to calculate hulls
+        Returns: ConvexHull object
+    
+    """
     coords = ord.loc[ids].values[:, :ndim]
     return ConvexHull(coords)
-        
-        
+
+
 def subsample_ids(group, n):
+    """ Subsample group of ids to depth n.
+
+        Parameters:
+        group: name of single group
+        n (int): n subsamples to extract from group
+    """
+        
     ids = list(group.index)
     return random.sample(ids, n)
 
@@ -263,7 +323,12 @@ def find_n_subsamples(groups, n_subsamples):
     """ If no subsampling depth is provided we set the 
         subsampling depth to be the size of the smallest 
         group - 1.
+
+        Parameters:
+        groups (pd.groupby object)
+        n_subsamples (int): n subsamples to find
     """
+
     smallest_n = min([len(group) for g, group in groups])
     
     if n_subsamples is not None:
@@ -326,7 +391,13 @@ def ch_by_groups(hp, ch, groups, n_subsamples, i, ndim=3, time=True):
 
 
 def generate_hulls_df(hp, n_subsamples=None, n_iters=10, ndim=3):
-    """ Generate hull volumes iteratively for the bootstrapping step. """
+    """ Generate hull volumes iteratively for the bootstrapping step. 
+    
+    Parameters:
+    hp (HullsPlot)
+    n_subsamples (default None): n subsamples per group
+    n_iters (default 10): number of iterations per bootstrap
+    ndim (default 3): number of dimensions over which to calculate ch"""
     
     groups = hp.meta.groupby([hp.groupc, hp.timec])
     n_subsamples = find_n_subsamples(groups, n_subsamples)
@@ -334,7 +405,7 @@ def generate_hulls_df(hp, n_subsamples=None, n_iters=10, ndim=3):
     ch = SubsampledCH()
     
     for i in range(n_iters):
-        ch = ch_by_groups(hp, ch, groups, n_subsamples, i, ndim=3, time=True)
+        ch = ch_by_groups(hp, ch, groups, n_subsamples, i, ndim=ndim, time=True)
     
     all_hulls = df_from_ch(hp, ch)
     return all_hulls
