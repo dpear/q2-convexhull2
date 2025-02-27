@@ -87,6 +87,39 @@ class TestHullsPlot(unittest.TestCase):
 
         color = self.hp.get_color_from_group('A')
         self.assertTrue(isinstance(color, str))
+        
+    def test_get_color_from_group(self):
+        
+        colors = self.hp.get_colors()
+        color = self.hp.get_color_from_group('A')
+        self.assertIn(color, colors.values())
+
+    def test_match_ids_error_handling(self):
+        with self.assertRaises(ValueError):
+            
+            # Too few points to create a hull
+            match_ids(self.hp, ['sample1'])
+
+    def test_get_hull_error_handling(self):
+        
+        # 2 points = can NOT make hull
+        points = np.random.rand(2, 3)
+        x = get_hull(points, 'A', 1)
+        self.assertIs(x, None)
+
+    def test_successful_hull_creation(self):
+        
+        # 4 points = CAN make hull
+        points = np.random.rand(4, 3) 
+        hull = get_hull(points, 'A', 1)
+        self.assertIsInstance(hull, ConvexHull)
+        
+    def test_subsample(self):
+        group = pd.DataFrame({
+            's1': [1,2,3],
+            's2':[1,2,3]},
+            index=[1,2,3])
+        subsample_ids(group, 2)
 
 if __name__ == "__main__":
     unittest.main()
