@@ -29,7 +29,7 @@ jobs:
 
       - name: Install conda reqs
         shell: bash -l {0}
-        run: conda install --file ci/conda_requirements.txt -c biocore
+        run: conda install --file ci/conda-requirements.txt -c biocore
 
       - name: Install auxillary conda CI packages
         shell: bash -l {0}
